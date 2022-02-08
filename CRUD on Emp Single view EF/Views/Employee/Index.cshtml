@@ -1,0 +1,93 @@
+﻿
+@{
+    Layout = null;
+    string msg = null;
+    if (this.IsPost)
+    {
+        if (Request["btnInsert"] == "Insert")
+        {
+            msg = "Record is inserted";
+        }
+        else if (Request["btnUpdate"] == "Update")
+        {
+            msg = "Record is Updated";
+        }
+
+
+    }
+    if (ViewData["delvalue"] != null)
+    {
+        int j = (int)ViewData["delvalue"];
+        if (j == 1)
+        {
+            msg = "Record is Deleted";
+        }
+        else
+        {
+            msg = "Record is Not Deleted";
+        }
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+   <form name="myform" method="post">
+       <div>
+           <table border="1">
+               <tr>
+                   <th>Employee No</th>
+                   <th>Employee Name</th>
+                   <th>Employee Salary</th>
+                   <th>Edit</th>
+                   <th>Delete</th>
+                  
+               </tr>
+               @{
+                   foreach (var item in ViewBag.emp)
+                   {
+                       if (item.empno.ToString() == Request.QueryString["eno"])
+                       {
+                        <tr>
+                            <td>
+                                <input type="text" name="txteno" value="@item.empno" readonly />
+                            </td>
+                            <td>@item.empname</td>
+                            <td>
+                                <input type="text" name="txtnewsal" value="@item.sal" />
+                            </td>
+                            <td>
+                                <input type="submit" name="btnUpdate" value="Update" formaction="~/Employee/UpdatedEmp" />
+                                @Html.ActionLink("cancel", "Cancel")
+                            </td>
+                        </tr>
+                       }
+                       else
+                       {
+                        <tr>
+                            <td>@item.empno</td>
+                            <td>@item.empname</td>
+                            <td>@item.sal</td>
+                            <td>@Html.ActionLink("Edit", "EditEmp", new { eno = item.empno })</td>
+                            <td>@Html.ActionLink("Delete", "DeleteEmp",new { eno=item.empno})</td>
+                        </tr>
+                       }
+                   }
+            }
+               <tr>
+                   <td>@Html.TextBox("txtneweno")</td>
+                   <td>@Html.TextBox("txtnewename")</td>
+                   <td>@Html.TextBox("txtnewesal")</td>
+                   <td><input type="submit" name="btninsert" value="Insert" formaction="~/Employee/InsertEmp" /></td>
+               </tr>
+           </table>
+           @Html.Label("lblmsg",msg)
+       </div>
+   </form>
+</body>
+</html>
